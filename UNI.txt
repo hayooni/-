@@ -1,0 +1,245 @@
+https://github.com/esnahn/NaverFloorPlanAnalysis 
+
+
+
+import numpy as np
+
+from selenium import webdriver
+
+from urllib.request import urlopen
+from bs4 import BeautifulSoup as bs
+from urllib.parse import quote_plus
+from selenium.webdriver.common.keys import Keys
+import time
+import urllib.request
+
+
+# -----------------------------------------------------------------------
+driver = webdriver.Chrome("C:/Users/USER/chromedriver.exe")
+driver.implicitly_wait(3)
+driver.get('https://land.naver.com/')
+
+arr = ['신서신일해피트리']
+
+arr_len = len(arr)
+
+gonggub_junyong = []
+room_bathroom = [] 
+sede_list = []
+sayongdate_list = []
+entrance = []
+adress = []
+area = []
+
+
+for i in range(arr_len) :
+    sede_list = []
+    sayongdate_list = []
+    driver.get('https://new.land.naver.com/')
+    danjiname = arr[i]
+    elem_search = driver.find_element_by_class_name("search_input")
+    elem_search.clear()
+    elem_search.send_keys(danjiname)
+    elem_search.send_keys(Keys.RETURN)
+    button = driver.find_element_by_class_name("complex_link").click()
+    time.sleep(1)
+
+
+    ddf = []
+    for i2 in range(len(driver.find_elements_by_class_name("title"))):
+        ddf.append(driver.find_elements_by_class_name("title")[i2].text)
+
+    if arr[i] in ddf:
+        driver.find_elements_by_class_name("title")[ddf.index(arr[i])].click()
+        button = driver.find_element_by_class_name("complex_link").click()
+        time.sleep(1)
+        detail = driver.find_element_by_class_name("detail_box--complex")
+        deep1 = detail.find_elements_by_class_name('table_th')
+        deep2 = detail.find_elements_by_class_name('table_td')
+
+        try :
+            sede_list = []    
+            print(sede_list[-1])
+            sayongdate_list = []
+            print(sayongdate_list[-1])
+            
+            for i3 in range(len(deep1)):
+                    sede_list.append(deep1[i3].text)
+                    sayongdate_list.append(deep1[i3].text)
+            
+            sede_num = sede_list.index('세대수')
+            sayongdate_num = sayongdate_list.index('사용승인일')
+
+            sede_list.append(deep2[sede_num].text)
+            sayongdate_list.append(deep2[sayongdate_num].text)
+
+
+
+
+
+ERROR =  try :
+            sede_list = []    
+            print(sede_list[-1])
+            sayongdate_list = []
+            print(sayongdate_list[-1])
+            
+            for i3 in range(len(deep1)):
+                    sede_list.append(deep1[i3].text)
+                    sayongdate_list.append(deep1[i3].text)
+            
+            sede_num = sede_list.index('세대수')
+            sayongdate_num = sayongdate_list.index('사용승인일')
+
+            sede_list.append(deep2[sede_num].text)
+            sayongdate_list.append(deep2[sayongdate_num].text)
+
+
+
+
+
+from selenium import webdriver
+
+## Chrome의 경우 | 아까 받은 chromedriver의 위치를 지정
+driver = webdriver.Chrome("C:/Users/USER/chromedriver.exe")
+
+## PhantomJS의 경우 | 아까 받은 PhantomJS의 위치를 지정
+# driver = webdriver.PhantomJS("C:/Users/USER/phantomjs.exe") 
+
+driver.implicitly_wait(3) ## 암묵적으로 웹 자원 로드를 위해 3초 딜레이
+
+## url에 접근
+driver.get('https://land.naver.com/')
+
+
+
+import numpy as np
+import time
+import requests
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+
+driver = webdriver.Chrome("C:/Users/USER/chromedriver.exe")
+
+
+
+
+
+arr = ['연지에코팰리스(아)','영통자이','더하이브B타워','LH어반리더스','마곡지구9단지','래미안리더스원']
+
+
+ar_len = len(arr) #단지명 리스트의 길이(반복할 횟수)
+jungong_list = [] # 준공 년월을 담을 리스트
+ganeng_list = [] # 거래 가능일을 담을 리스트
+
+jungong_ganeng_list = [] # 위 두 리스트를 찾기 위해 사용할 여분의 리스트
+
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import csv
+
+# csv파일 생성
+f = open('apartment.csv', 'w', encoding="utf-8-sig", newline='')
+w = csv.writer(f)
+w.writerow(['거래', '면적', '가격', '동', '상세 설명'])
+
+# 아래의 함수를 사용하여 크롬 창을 열지 않고 백그라운드로 실행
+option = webdriver.ChromeOptions()
+option.add_argument('headless')
+
+# 옵션에 위에서 만든 option을 추가
+url = 'http://naver.com'
+browser = webdriver.Chrome(options=option)
+browser.get(url)
+
+browser.find_element(By.ID, 'query').send_keys("동대구 에일린의뜰", Keys.ENTER)
+url = browser.find_element(By.CLASS_NAME, 'api_more_theme').get_attribute('href')
+browser.get(url)
+
+# 해당하는 페이지의 HTML 소스를 어서 BeautifulSoup 객체로 만듬
+soup = BeautifulSoup(browser.page_source, 'lxml')
+
+browser.quit()
+
+# 아래의 문장은 soup.find('div', attrs={'class': 'item_link'})와 같은 문장임
+# 대신 select를 이용하면 아래와 같이 .price_line > .price와 같이 태그간의 이동이 유용함
+datas = soup.select('.item_link')
+
+for i,data in enumerate(datas):
+    print(f'========== 매물{i} ==========')
+    type = data.select('.price_line > .type')[0].string
+    print(f'거래 : {type}')
+    spec = data.select('.info_area .spec')
+    print(f'면적 : {spec[0].string}')
+    price = data.select('.price_line > .price')[0].string
+    print(f"가격 : {price}")
+    where = data.select('.item_title > .text')[0].string.split()[1]
+    print(f"동 : {where}")
+    print(f'상세 설명 : {spec[1].string}')
+    w.writerow([type, spec[0].string, price, where, spec[1].string])
+
+f.close()
+
+
+
+
+
+------------------------------------------------------------------
+
+
+import numpy as np
+
+from selenium import webdriver
+
+from urllib.request import urlopen
+from bs4 import BeautifulSoup as bs
+from urllib.parse import quote_plus
+from selenium.webdriver.common.keys import Keys
+import time
+import urllib.request
+
+
+# -----------------------------------------------------------------------
+driver = webdriver.Chrome("C:/Users/USER/chromedriver.exe")
+driver.implicitly_wait(3)
+driver.get('https://land.naver.com/')
+
+arr = ['신서신일해피트리']
+
+arr_len = len(arr)
+
+gonggub_junyong = []
+room_bathroom = [] 
+sede_list = []
+sayongdate_list = []
+entrance = []
+adress = []
+area = []
+
+
+for i in range(arr_len) :
+    sede_list = []
+    sayongdate_list = []
+    driver.get('https://new.land.naver.com/')
+    danjiname = arr[i]
+    elem_search = driver.find_element_by_class_name("search_input")
+    elem_search.clear()
+    elem_search.send_keys(danjiname)
+    elem_search.send_keys(Keys.RETURN)
+    button = driver.find_element_by_class_name("complex_link").click()
+    time.sleep(1)
+
+
+    ddf = []
+    for i2 in range(len(driver.find_elements_by_class_name("title"))):
+        ddf.append(driver.find_elements_by_class_name("title")[i2].text)
+
+    if arr[i] in ddf:
+        driver.find_elements_by_class_name("title")[ddf.index(arr[i])].click()
+        button = driver.find_element_by_class_name("complex_link").click()
+        time.sleep(1)
+        detail = driver.find_element_by_class_name("detail_box--complex")
+        deep1 = detail.find_elements_by_class_name('table_th')
+        deep2 = detail.find_elements_by_class_name('table_td')
